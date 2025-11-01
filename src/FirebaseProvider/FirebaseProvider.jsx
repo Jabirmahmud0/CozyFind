@@ -1,12 +1,17 @@
 // Import necessary functions and dependencies
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
-import auth from "../Firebase/firebase.config";
+import { app, analytics } from "../Firebase/firebase.config";
+import { getAuth } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
 import { GithubAuthProvider } from "firebase/auth";
+import PropTypes from 'prop-types';
 
 // Create the AuthContext
 export const AuthContext = createContext(null);
+
+// Get auth instance from the app
+const auth = getAuth(app);
 
 // Define the FirebaseProvider component
 const FirebaseProvider = ({ children }) => {
@@ -138,6 +143,8 @@ const FirebaseProvider = ({ children }) => {
         user,
         updateUserProfile,
         loading,
+        app,
+        analytics
     };
 
     // Return the AuthContext provider with the defined values
@@ -146,6 +153,10 @@ const FirebaseProvider = ({ children }) => {
             {children}
         </AuthContext.Provider>
     );
+};
+
+FirebaseProvider.propTypes = {
+    children: PropTypes.node.isRequired,
 };
 
 export default FirebaseProvider;

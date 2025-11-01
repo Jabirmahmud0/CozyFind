@@ -1,14 +1,14 @@
-
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import 'react-toastify/dist/ReactToastify.css';
 import useAuth from '../../Hooks/useAuth';
 
 const Register = () => {
  
-   const {createUser,updateProfileUser} = useAuth();
-
-   
+   const {createUser, updateUserProfile} = useAuth();
+   const navigate = useNavigate();
+   const location = useLocation();
+   const from = location.state?.from?.pathname || "/";
 
    const {
     register,
@@ -18,16 +18,19 @@ const Register = () => {
   } = useForm();
 
   const onSubmit = (data) => {
-    const { email, password, image, fullName } = data;
+    const { email, password, photoURL, fullName } = data;
     
     //create user and update profile
     createUser(email, password)
         .then(() => {
-            updateUserProfile(fullName, image).then(() => {
-                      navigate(from);
-    });
-    });
-};
+            updateUserProfile(fullName, photoURL).then(() => {
+                      navigate(from, { replace: true });
+            });
+        })
+        .catch(error => {
+            console.error("Error creating user:", error);
+        });
+  };
   
     
 
@@ -50,14 +53,11 @@ const Register = () => {
                 {errors.email && <span className='text-red-500'>This field is required</span>}
               </div>
               <div>
-                <input id="photoURL" name="photoURL" type="text"  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm mt-2" placeholder="Photo URL " />
-               
-
+                <input id="photoURL" name="photoURL" type="text"  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm mt-2" placeholder="Photo URL" {...register("photoURL")} />
               </div>
               <div>
                 <input id="password" name="password" type="password"    className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm mt-2" placeholder="Create a Password" {...register("password", { required: true })}/>
                 {errors.password && <span className='text-red-500'>This field is required</span>}
-
               </div>
             </div>
              <p className="mt-2 text-sm text-red-600"></p>

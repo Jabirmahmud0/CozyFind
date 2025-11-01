@@ -1,5 +1,5 @@
 import { FirebaseAppProvider, FirebaseAuthProvider } from 'reactfire';
-import app from './firebase.config';
+import { app } from './Firebase/firebase.config';
 
 function App() {
   return (
@@ -11,4 +11,4 @@ function App() {
   );
 }
 
-export default App;"" 
+export default App;
